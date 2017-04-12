@@ -1,0 +1,7 @@
+#!/usr/sbin/nft
+
+chain openssh-sshd {
+    type filter hook input priority 0; policy accept;
+    # allow ssh access for clients in ZONE_LAN
+    tcp dport ssh iif @ZONE_LAN mark set $accept_packet;
+}
