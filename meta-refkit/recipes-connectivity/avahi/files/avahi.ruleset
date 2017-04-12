@@ -1,0 +1,7 @@
+#!/usr/sbin/nft
+
+chain avahi {
+    type filter hook input priority 0; policy accept;
+    # allow multicast for clients in ZONE_LAN
+    tcp dport 5353 iif @ZONE_LAN mark set $accept_packet;
+}
