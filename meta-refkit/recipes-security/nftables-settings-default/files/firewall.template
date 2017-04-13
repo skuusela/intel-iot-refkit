@@ -1,0 +1,32 @@
+#!/usr/sbin/nft
+
+flush ruleset;
+
+include "variables.ruleset"
+
+table inet filter {{
+
+    include "zones.ruleset"
+
+    {service_chains}
+
+    chain input {{
+        # Run this later than service and application scripts (priority 1)
+        # and drop all packets that don't match to the the rules.
+        type filter hook input priority 1; policy drop;
+
+        # Accept packets belonging to established and related connections.
+        ct state established,related accept;
+
+        # Allow icmpv6 to make IPv6 work.
+        ip6 nexthdr icmpv6 accept;
+
+        # Allow connections to localhost interfaces.
+        iif @ZONE_LOCAL accept;
+
+        # Accept packets tagged by service and application. Note: we cannot
+        # use $accept_packet here because the variables.ruleset cannot be
+        # included twice in the same table.
+        mark $accept_packet accept;
+    }}
+}}

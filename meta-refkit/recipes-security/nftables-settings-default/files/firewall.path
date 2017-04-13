@@ -1,0 +1,8 @@
+[Unit]
+Description=Track changes to firewall configuration
+
+[Path]
+PathChanged=/run/firewall/firewall.ruleset
+
+[Install]
+WantedBy=network.target
