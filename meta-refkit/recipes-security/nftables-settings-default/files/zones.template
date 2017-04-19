@@ -29,7 +29,8 @@ set ZONE_DMZ {{
 # dynamically, the interface indexes associated with interface names change.
 # Whenever a new VPN interface is brought up, the service doing it should add
 # the VPN interface to this set ("nft add element inet filter ZONE_VPN {{vpn0}}")
-# and remove it after it's gone ("nft delete ...").
+# and remove it after it's gone ("nft delete ..."). This is not needed if the
+# dynamic loading of the firewall ruleset is enabled after any interface change.
 set ZONE_VPN {{
     type iface_index
     {vpn_interfaces}

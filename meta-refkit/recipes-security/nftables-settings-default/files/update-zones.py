@@ -4,7 +4,6 @@
 
 import os
 import sys
-import hashlib
 import configparser
 import re
 
@@ -50,11 +49,7 @@ output_data = data.format(local_interfaces=local_ifs, lan_interfaces=lan_ifs,
 if (os.path.exists(zonesRulesetPath)):
     with open(zonesRulesetPath, "r", encoding="utf-8") as f:
         current_data = f.read()
-    m1 = hashlib.sha256()
-    m2 = hashlib.sha256()
-    m1.update(current_data.encode("utf-8"))
-    m2.update(output_data.encode("utf-8"))
-    if m1.digest() == m2.digest():
+    if current_data == output_data:
         # same file content
         sys.exit()
 
