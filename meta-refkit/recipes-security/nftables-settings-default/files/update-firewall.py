@@ -1,10 +1,15 @@
 #!/usr/bin/env python3
 
 import os
+import fcntl
 
 servicePaths = ["/usr/lib/firewall/services", "/etc/firewall/services"]
 configTemplatePath = "/usr/lib/firewall/firewall.template"
 configRulesetPath = "/run/firewall/firewall.ruleset"
+
+# lock to prevent processing several events at once
+lock = open("/run/firewall/config_flock", "w")
+fcntl.lockf(lock, fcntl.LOCK_EX)
 
 # read the template
 with open(configTemplatePath, "r") as f:

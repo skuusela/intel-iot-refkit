@@ -9,7 +9,7 @@ BindsTo=sys-subsystem-net-devices-%i.device
 After=sys-subsystem-net-devices-%i.device firewall.target
 
 [Service]
-ExecStart=/bin/systemctl start firewall-config.service
-ExecStop=/bin/systemctl start firewall-config.service
+ExecStart=/usr/bin/update-zones.py
+ExecStop=/usr/bin/update-zones.py
 Type=forking
 RemainAfterExit=yes

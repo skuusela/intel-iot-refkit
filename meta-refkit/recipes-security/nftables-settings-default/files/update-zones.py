@@ -6,10 +6,15 @@ import os
 import sys
 import configparser
 import re
+import fcntl
 
 zonesConfigPaths = ["/usr/lib/firewall/zones.config", "/etc/firewall/zones.config"]
 zonesTemplatePath = "/usr/lib/firewall/zones.template"
 zonesRulesetPath = "/run/firewall/zones.ruleset"
+
+# lock to prevent processing several events at once
+lock = open("/run/firewall/config_flock", "w")
+fcntl.lockf(lock, fcntl.LOCK_EX)
 
 # get available interfaces
 interfaces = os.listdir("/sys/class/net")

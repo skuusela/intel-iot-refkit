@@ -7,7 +7,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 inherit systemd
 
-RDEPENDS_${PN} = "python3 python3-re"
+RDEPENDS_${PN} = "python3 python3-re python3-fcntl"
 
 SRC_URI = " \
     file://update-firewall.py \
