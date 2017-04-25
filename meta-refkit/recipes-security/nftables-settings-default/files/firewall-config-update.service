@@ -6,4 +6,4 @@ ConditionPathExists=!/run/firewall/firewall.ruleset
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/update-firewall.py
+ExecStart=/usr/bin/firewall-update.py

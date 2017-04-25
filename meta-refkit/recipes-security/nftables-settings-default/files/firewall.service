@@ -11,8 +11,9 @@ Requires=firewall-config-update.service
 Wants=firewall-config.path
 
 [Service]
-Type=oneshot
+Type=simple
 ExecStart=/usr/sbin/nft -I /run/firewall -I /usr/lib/firewall -f /run/firewall/firewall.ruleset
+ExecReload=/usr/sbin/nft -I /run/firewall -I /usr/lib/firewall -f /run/firewall/firewall.ruleset
 
 [Install]
 WantedBy=network.target

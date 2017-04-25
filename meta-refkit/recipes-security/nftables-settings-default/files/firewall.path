@@ -2,6 +2,7 @@
 Description=Track changes to firewall configuration
 
 [Path]
+ReloadOnTrigger=true
 PathChanged=/run/firewall/firewall.ruleset
 
 [Install]

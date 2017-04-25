@@ -8,9 +8,12 @@ import configparser
 import re
 import fcntl
 
-zonesConfigPaths = ["/usr/lib/firewall/zones.config", "/etc/firewall/zones.config"]
-zonesTemplatePath = "/usr/lib/firewall/zones.template"
-zonesRulesetPath = "/run/firewall/zones.ruleset"
+zonesConfigPaths   = ["/usr/lib/firewall/zones.config", "/etc/firewall/zones.config"]
+zonesTemplatePath  = "/usr/lib/firewall/zones.template"
+zonesRulesetPath   = "/run/firewall/zones.ruleset"
+servicePaths       = ["/usr/lib/firewall/services", "/etc/firewall/services"]
+configTemplatePath = "/usr/lib/firewall/firewall.template"
+configRulesetPath  = "/run/firewall/firewall.ruleset"
 
 # lock to prevent processing several events at once
 lock = open("/run/firewall/config_flock", "w")
@@ -41,7 +44,7 @@ dmz_ifs = search_interfaces("ZONE_DMZ", config)
 vpn_ifs = search_interfaces("ZONE_VPN", config)
 all_ifs = search_interfaces("ZONE_ALL", config)
 
-# read the template
+# read the zones template
 with open(zonesTemplatePath, "r") as f:
     data = f.read()
 
@@ -51,13 +54,34 @@ output_data = data.format(local_interfaces=local_ifs, lan_interfaces=lan_ifs,
 
 # Do not write the ruleset file if it already exists and there is no change.
 # This prevents unneccessary firewall setup changes.
+
+current_data = None
+
 if (os.path.exists(zonesRulesetPath)):
     with open(zonesRulesetPath, "r", encoding="utf-8") as f:
         current_data = f.read()
-    if current_data == output_data:
-        # same file content
-        sys.exit()
+
+if not current_data or current_data != output_data:
+    # different file content, write the ruleset file
+    with open(zonesRulesetPath, "w") as f:
+        f.write(output_data)
+
+if "--only-zones" in sys.argv:
+    # configured to run only zone update
+    sys.exit(0)
+
+# read the firewall template
+with open(configTemplatePath, "r") as f:
+    data = f.read()
+
+serviceFiles = []
+for path in list(filter(os.path.exists, servicePaths)):
+    serviceFiles += [os.path.realpath(path + "/" + f) for f in os.listdir(path)]
+
+service_file_blob = "\n".join(["include \"" + f + "\"" for f in serviceFiles])
+
+output_data = data.format(service_chains=service_file_blob)
 
 # write the ruleset file
-with open(zonesRulesetPath, "w") as f:
+with open(configRulesetPath, "w") as f:
     f.write(output_data)

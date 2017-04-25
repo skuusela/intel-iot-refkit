@@ -10,8 +10,7 @@ inherit systemd
 RDEPENDS_${PN} = "python3 python3-re python3-fcntl"
 
 SRC_URI = " \
-    file://update-firewall.py \
-    file://update-zones.py \
+    file://firewall-update.py \
     file://zones.config \
     file://zones.template \
     file://firewall.template \
@@ -36,7 +35,7 @@ do_install() {
 
     install -m 0644 ${WORKDIR}/*.service ${D}${systemd_unitdir}/system/
     install -m 0644 ${WORKDIR}/*.path ${D}${systemd_unitdir}/system/
-    install -m 0755 ${WORKDIR}/update-*.py ${D}${bindir}/
+    install -m 0755 ${WORKDIR}/firewall-update.py ${D}${bindir}/
     install -m 0644 ${WORKDIR}/zones.config ${D}${libdir}/firewall/
     install -m 0644 ${WORKDIR}/*.template ${D}${libdir}/firewall/
     install -m 0644 ${WORKDIR}/variables.ruleset ${D}${libdir}/firewall/
